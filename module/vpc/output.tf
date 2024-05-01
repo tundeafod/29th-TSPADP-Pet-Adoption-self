@@ -1,37 +1,21 @@
-output "region" {
-  value = var.region
-}
-
-output "project_name" {
-  value = var.project_name
-}
-
 output "vpc_id" {
   value = aws_vpc.vpc.id
 }
-
-output "pub_sub_1a_id" {
-  value = aws_subnet.pub_sub_1a.id
+output "publicsub1" {
+  value = aws_subnet.publicsub[0].id
 }
-output "pub_sub_1b_id" {
-  value = aws_subnet.pub_sub_1b.id
+output "publicsub2" {
+  value = aws_subnet.publicsub[1].id
 }
-output "pub_sub_1c_id" {
-  value = aws_subnet.pub_sub_1c.id
+output "publicsub3" {
+  value = aws_subnet.publicsub[2].id
 }
-
-output "pri_sub_1a_id" {
-  value = aws_subnet.pri_sub_1a.id
+output "privatesub1" {
+  value = aws_subnet.privatesub[0].id
 }
-
-output "pri_sub_1b_id" {
-  value = aws_subnet.pri_sub_1b.id
+output "privatesub2" {
+  value = aws_subnet.privatesub[1].id
 }
-
-output "pri_sub_1c_id" {
-    value = aws_subnet.pri_sub_1c.id 
-}
-
-output "igw_id" {
-    value = aws_internet_gateway.internet_gateway
+output "privatesub3" {
+  value = aws_subnet.privatesub[2].id
 }

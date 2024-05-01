@@ -1,146 +1,90 @@
-# create vpc
+locals {
+  name = "TSPADP"
+}
+# Creating VPC
 resource "aws_vpc" "vpc" {
-  cidr_block              = var.vpc_cidr
-  instance_tenancy        = "default"
-  enable_dns_hostnames    = true
-  enable_dns_support =  true
-
-  tags      = {
-    Name    = "${var.project_name}-vpc"
+  cidr_block = "10.0.0.0/16"
+  enable_dns_support = true
+  enable_dns_hostnames = true
+  tags = {
+    Name = "${local.name}-vpc"
   }
 }
 
-# create internet gateway and attach it to vpc
-resource "aws_internet_gateway" "internet_gateway" {
-  vpc_id    = aws_vpc.vpc.id
-
-  tags      = {
-    Name    = "${var.project_name}-igw"
+# Creating public subnet
+resource "aws_subnet" "publicsub" {
+  vpc_id            = aws_vpc.vpc.id
+  count             = 3
+  cidr_block        = element(var.public-subnet, count.index)
+  availability_zone = element(var.azs, count.index)
+  tags = {
+    Name = "${local.name}-public-subnet"
   }
 }
 
-# use data source to get all avalablility zones in region
-data "aws_availability_zones" "available_zones" {}
-
-# create public subnet pub_sub_1a
-resource "aws_subnet" "pub_sub_1a" {
-  vpc_id                  = aws_vpc.vpc.id
-  cidr_block              = var.pub_sub_1a_cidr
-  availability_zone       = data.aws_availability_zones.available_zones.names[0]
-  map_public_ip_on_launch = true
-
-  tags      = {
-    Name    = "pub_sub_1a"
+resource "aws_subnet" "privatesub" {
+  vpc_id            = aws_vpc.vpc.id
+  count             = 3
+  cidr_block        = element(var.private-subnet, count.index)
+  availability_zone = element(var.azs, count.index)
+  tags = {
+    Name = "${local.name}-private-subnet"
   }
 }
 
-# create public subnet pub_sub_1b
-resource "aws_subnet" "pub_sub_1b" {
-  vpc_id                  = aws_vpc.vpc.id
-  cidr_block              = var.pub_sub_2b_cidr
-  availability_zone       = data.aws_availability_zones.available_zones.names[1]
-  map_public_ip_on_launch = true
-
-  tags      = {
-    Name    = "pub_sub_1b"
+# creating internet gateway
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.vpc.id
+  tags = {
+    Name = "${local.name}-igw"
   }
 }
 
-# create public subnet pub_sub_1c
-resource "aws_subnet" "pub_sub_1c" {
-  vpc_id                  = aws_vpc.vpc.id
-  cidr_block              = var.pub_sub_1c_cidr
-  availability_zone       = data.aws_availability_zones.available_zones.names[2]
-  map_public_ip_on_launch = true
-
-  tags      = {
-    Name    = "pub_sub_1c"
-  }
-}
-
-# create route table and add public route
-resource "aws_route_table" "public_route_table" {
-  vpc_id       = aws_vpc.vpc.id
-
+# create route table
+resource "aws_route_table" "public-rt" {
+  vpc_id = aws_vpc.vpc.id
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.internet_gateway.id
+    gateway_id = aws_internet_gateway.igw.id
   }
-
-  tags       = {
-    Name     = "Public-rt"
-  }
-}
-
-# associate public subnet pub-sub-1a to public route table
-resource "aws_route_table_association" "pub-sub-1a_route_table_association" {
-  subnet_id           = aws_subnet.pub_sub_1a.id
-  route_table_id      = aws_route_table.public_route_table.id
-}
-
-# associate public subnet pub-sub-1b to public route table
-resource "aws_route_table_association" "pub-sub-1b_route_table_association" {
-  subnet_id           = aws_subnet.pub_sub_1b.id
-  route_table_id      = aws_route_table.public_route_table.id
-}
-
-# associate public subnet pub-sub-1c to public route table
-resource "aws_route_table_association" "pub-sub-1c_route_table_association" {
-  subnet_id           = aws_subnet.pub_sub_1c.id
-  route_table_id      = aws_route_table.public_route_table.id
-}
-
-# create private app subnet pri-sub-1a
-resource "aws_subnet" "pri_sub_1a" {
-  vpc_id                   = aws_vpc.vpc.id
-  cidr_block               = var.pri_sub_1a_cidr
-  availability_zone        = data.aws_availability_zones.available_zones.names[0]
-  map_public_ip_on_launch  = false
-
-  tags      = {
-    Name    = "pri-sub-1a"
+  tags = {
+    Name = "${local.name}-public-rt"
   }
 }
 
-# create private app pri-sub-1b
-resource "aws_subnet" "pri_sub_1b" {
-  vpc_id                   = aws_vpc.vpc.id
-  cidr_block               = var.pri_sub_1b_cidr
-  availability_zone        = data.aws_availability_zones.available_zones.names[1]
-  map_public_ip_on_launch  = false
+resource "aws_route_table_association" "pubrt-ass" {
+  count          = 3
+  route_table_id = aws_route_table.public-rt.id
+  subnet_id      = aws_subnet.publicsub[count.index].id
+}
 
-  tags      = {
-    Name    = "pri-sub-1b"
+resource "aws_eip" "eip" {
+  domain = "vpc"
+  tags = {
+    Name = "${local.name}-eip"
   }
 }
 
-# create private data subnet pri-sub-1c
-resource "aws_subnet" "pri_sub_1c" {
-  vpc_id                   = aws_vpc.vpc.id
-  cidr_block               = var.pri_sub_1c_cidr
-  availability_zone        = data.aws_availability_zones.available_zones.names[0]
-  map_public_ip_on_launch  = false
-
-  tags      = {
-    Name    = "pri-sub-1c"
+resource "aws_nat_gateway" "nat-gw" {
+  allocation_id = aws_eip.eip.id
+  subnet_id     = aws_subnet.publicsub[0].id
+  tags = {
+    Name = "${local.name}-nat-gw"
   }
 }
 
-# Allocate Elastic IP Address
-resource "aws_eip" "eip-nat-a" {
-  vpc    = true
-
-  tags   = {
-    Name = "eip-nat-a"
+resource "aws_route_table" "private-rt" {
+  vpc_id = aws_vpc.vpc.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_nat_gateway.nat-gw.id
+  }
+  tags = {
+    Name = "${local.name}-private-rt"
   }
 }
-
-# create nat gateway
-resource "aws_nat_gateway" "nat-a" {
-  allocation_id = aws_eip.eip-nat-a.id
-  subnet_id     = var.pub_sub_1a_id
-
-  tags   = {
-    Name = "nat-a"
-  }
+resource "aws_route_table_association" "prvrt-ass" {
+  count          = 3
+  route_table_id = aws_route_table.private-rt.id
+  subnet_id      = aws_subnet.privatesub[count.index].id
 }

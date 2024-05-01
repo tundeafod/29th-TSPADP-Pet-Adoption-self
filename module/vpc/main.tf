@@ -141,6 +141,6 @@ resource "aws_nat_gateway" "nat-a" {
   subnet_id     = var.pub_sub_1a_id
 
   tags   = {
-    Name = "nat-b"
+    Name = "nat-a"
   }
 }

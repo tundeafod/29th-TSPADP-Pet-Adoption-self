@@ -1,9 +1,0 @@
-variable region {}
-variable project_name {}
-variable vpc_cidr {}       
-variable pub_sub_1a_cidr {}
-variable pub_sub_1b_cidr {}
-variable pub_sub_1c_cidr {}
-variable pri_sub_1a_cidr {}
-variable pri_sub_1b_cidr {}
-variable pri_sub_2c_cidr {}

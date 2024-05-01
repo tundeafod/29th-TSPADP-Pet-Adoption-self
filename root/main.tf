@@ -1,3 +1,7 @@
+locals {
+  name = "TSPADP-Pet-Clinic"
+}
+
 # Include the keypair module for generating and managing SSH keys.
 module "keypair" {
   source = "../module/keypair"
@@ -10,7 +14,20 @@ module "vpc" {
   azs            = ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
 }
 
-# module "securitygroup" {
-#   source = "../module/securitygroup"
-#   vpc-id = module.vpc.vpc_id
-# }
+module "securitygroup" {
+  source = "../module/securitygroup"
+  vpc_id = module.vpc.vpc_id
+}
+
+module "sonarqube" {
+  source       = "../module/sonarqube"
+  ami          = "ami-053a617c6207ecc7b"
+  sonarqube-sg = module.securitygroup.sonarqube_sg
+  subnet_id    = module.vpc.publicsub1
+  keypair      = module.keypair.public-key-id
+  name         = "${local.name}-sonarqube"
+  nr-key       = ""
+  nr-acc-id    = ""
+  nr-region    = ""
+}
+  

@@ -1,27 +1,26 @@
-# resource "aws_security_group" "bastion_sg" {
-#   name        = "bastion security group"
-#   description = "bastion Security Group"
-#   vpc_id      = var.vpc_id
+resource "aws_security_group" "bastion_sg" {
+  name        = "bastion security group"
+  description = "bastion security Group"
+  vpc_id      = var.vpc_id
 
-#   ingress {
-#     description = "ssh access"
-#     from_port   = 22
-#     to_port     = 22
-#     protocol    = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
+  ingress {
+    description = "ssh access"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+}
 
-#   egress {
-#     from_port   = 0
-#     to_port     = 0
-#     protocol    = -1
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-
-#   tags = {
-#     Name = "bastion_sg"
-#   }
-# }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = -1
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+tags = {
+    Name = "bastion_sg"
+  }
+}
 
 # SonarQube security group
 resource "aws_security_group" "sonarqube_sg" {

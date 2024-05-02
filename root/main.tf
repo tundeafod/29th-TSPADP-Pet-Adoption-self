@@ -30,4 +30,14 @@ module "sonarqube" {
   nr-acc-id    = ""
   nr-region    = ""
 }
+
+module "bastion" {
+  source       = "../module/bastion"
+  ami_redhat   = "ami-035cecbff25e0d91e"
+  subnet_id    = module.vpc.publicsub2
+  bastion-sg = module.securitygroup.bastion_sg
+  keyname      = module.keypair.public-key-id
+  private_key  = module.keypair.private-key-id
+  name         = "${local.name}-bastion"
+}
   

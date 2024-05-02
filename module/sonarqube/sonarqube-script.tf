@@ -6,7 +6,7 @@ locals {
 sudo apt update -y
 
 # Install necessary packages
-sudo apt install -y openjdk-11-jdk postgresql unzip
+sudo apt install -y openjdk-11-jdk postgresql unzip net-tools nginx
 
 # Configure OS level values
 sudo bash -c 'echo "
@@ -19,13 +19,6 @@ sudo bash -c 'echo "
 sonarqube   -   nofile   65536
 sonarqube   -   nproc    4096" >> /etc/security/limits.conf'
 
- Install PostgreSQL
-sudo apt-get install -y postgresql postgresql-contrib
-
-# Start and enable PostgreSQL service
-sudo systemctl start postgresql
-sudo systemctl enable postgresql
-
 # Change default password of postgres user
 sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'Admin123@'"
 
@@ -37,24 +30,20 @@ sudo -u postgres psql -c "ALTER USER sonar WITH ENCRYPTED PASSWORD 'Admin123@'"
 sudo -u postgres psql -c "CREATE DATABASE sonarqube OWNER sonar"
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE sonarqube to sonar"
 
-# Restart PostgreSQL for changes to take effect
-sudo systemctl restart postgresql
-
-# Install SonarQube
-sudo mkdir /sonarqube/
-cd /sonarqube/
-sudo wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.4.1.35646.zip
-sudo unzip sonarqube-9.4.1.35646 -d /opt/
-sudo mv /opt/sonarqube-9.4.1.35646/ /opt/sonarqube
+# Download and extract SonarQube
+sudo mkdir /opt/sonarqube/
+sudo wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.4.1.35646.zip -P /opt/sonarqube/
+sudo unzip /opt/sonarqube/sonarqube-9.4.1.35646.zip -d /opt/sonarqube/
+sudo mv /opt/sonarqube/sonarqube-9.4.1.35646 /opt/sonarqube/
 
 # Add group user sonarqube
-sudo groupadd sonar
+sudo groupadd sonarqube
 
 # Create a user and add the user into the group with directory permission to the /opt/ directory
-sudo useradd -c "SonarQube - User" -d /opt/sonarqube/ -g sonar sonar
+sudo useradd -m -c "SonarQube - User" -d /opt/sonarqube/ -g sonarqube sonarqube
 
-# Change ownership of the directory to sonar
-sudo chown sonar:sonar /opt/sonarqube/ -R
+# Change ownership of the directory to sonarqube
+sudo chown sonarqube:sonarqube /opt/sonarqube/ -R
 
 # Configure SonarQube
 sudo bash -c 'echo "
@@ -74,8 +63,8 @@ Type=forking
 ExecStart=/opt/sonarqube/bin/linux-x86-64/sonar.sh start
 ExecStop=/opt/sonarqube/bin/linux-x86-64/sonar.sh stop
 ExecReload=/opt/sonarqube/bin/linux-x86-64/sonar.sh restart
-User=sonar
-Group=sonar
+User=sonarqube
+Group=sonarqube
 Restart=always
 LimitNOFILE=65536
 LimitNPROC=4096
@@ -89,18 +78,12 @@ sudo systemctl daemon-reload
 sudo systemctl enable sonarqube.service
 sudo systemctl start sonarqube.service
 
-# Install net-tools incase we want to debug later
-sudo apt install net-tools -y
-
-# Install nginx
-sudo apt install nginx -y
-
-# Configure nginx to access server from outside
+# Configure Nginx to access SonarQube server from outside
 sudo tee /etc/nginx/sites-enabled/sonarqube.conf > /dev/null <<EOT
 server {
   listen 80;
-  access_log  /var/log/nginx/sonar.access.log;
-  error_log   /var/log/nginx/sonar.error.log;
+  access_log  /var/log/nginx/sonarqube.access.log;
+  error_log   /var/log/nginx/sonarqube.error.log;
   proxy_buffers 16 64k;
   proxy_buffer_size 128k;
   location / {
@@ -118,10 +101,8 @@ EOT
 # Remove the default configuration file
 sudo rm /etc/nginx/sites-enabled/default
 
-# Enable and restart nginx service
-sudo systemctl enable nginx.service
-sudo systemctl stop nginx.service
-sudo systemctl start nginx.service
+# Reload Nginx service
+sudo systemctl reload nginx.service
 
 # Install New Relic
 # curl -Ls https://download.newrelic.com/install/newrelic-cli/scripts/install.sh | bash && sudo NEW_RELIC_API_KEY="${var.nr-key}" NEW_RELIC_ACCOUNT_ID="${var.nr-acc-id}" NEW_RELIC_REGION="${var.nr-region}" /usr/local/bin/newrelic install -y

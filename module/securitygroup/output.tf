@@ -10,9 +10,9 @@ output "sonarqube_sg" {
 #   value = aws_security_group.ansible_sg.id
 # }
 
-# output "nexus_sg" {
-#   value = aws_security_group.nexus_sg.id
-# }
+output "nexus_sg" {
+  value = aws_security_group.nexus_sg.id
+}
 
 # output "jenkins_sg" {
 #   value = aws_security_group.jenkins_sg.id

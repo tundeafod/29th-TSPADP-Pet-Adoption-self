@@ -17,7 +17,7 @@ resource "aws_security_group" "bastion_sg" {
     protocol    = -1
     cidr_blocks = ["0.0.0.0/0"]
   }
-tags = {
+  tags = {
     Name = "bastion_sg"
   }
 }
@@ -30,7 +30,7 @@ resource "aws_security_group" "sonarqube_sg" {
 
   # Inbound Rules
   ingress {
-    description = "ssh access"
+    description = "https port"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
@@ -93,58 +93,58 @@ resource "aws_security_group" "sonarqube_sg" {
 #   }
 # }
 
-# # Nexus SG
-# resource "aws_security_group" "nexus_sg" {
-#   name        = "nexus-sg"
-#   description = "nexus Security Group"
-#   vpc_id      = var.vpc_id
+# Nexus SG
+resource "aws_security_group" "nexus_sg" {
+  name        = "nexus-sg"
+  description = "nexus Security Group"
+  vpc_id      = var.vpc_id
 
-#   # Inbound Rules
-#   ingress {
-#     description = "ssh access"
-#     from_port   = 22
-#     to_port     = 22
-#     protocol    = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-#   ingress {
-#     description = "nexus port 1"
-#     from_port   = 8081
-#     to_port     = 8081
-#     protocol    = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-#   ingress {
-#     description = "nexus port 2"
-#     from_port   = 8085
-#     to_port     = 8085
-#     protocol    = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-#   ingress {
-#     description = "https port"
-#     from_port   = 443
-#     to_port     = 443
-#     protocol    = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-#   ingress {
-#     description = "http port"
-#     from_port   = 80
-#     to_port     = 80
-#     protocol    = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-#   egress {
-#     from_port   = 0
-#     to_port     = 0
-#     protocol    = "-1"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-#   tags = {
-#     Name = "nexus_sg"
-#   }
-# }
+  # Inbound Rules
+  ingress {
+    description = "ssh access"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    description = "nexus port 1"
+    from_port   = 8081
+    to_port     = 8081
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    description = "nexus port 2"
+    from_port   = 8085
+    to_port     = 8085
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    description = "https port"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    description = "http port"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "nexus_sg"
+  }
+}
 
 # # jenkins SG
 # resource "aws_security_group" "jenkins_sg" {

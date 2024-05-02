@@ -1,5 +1,5 @@
 locals {
-  name = "TSPADP-Pet-Clinic"
+  name = "Jenkins-Ansible-Auto-discovery"
 }
 
 # Include the keypair module for generating and managing SSH keys.
@@ -39,5 +39,14 @@ module "bastion" {
   keyname      = module.keypair.public-key-id
   private_key  = module.keypair.private-key-id
   name         = "${local.name}-bastion"
+}
+
+module "nexus" {
+  source       = "../module/nexus"
+  ami          = "ami-053a617c6207ecc7b"
+  subnet_id    = module.vpc.publicsub3
+  nexus-sg = module.securitygroup.nexus_sg
+  keyname      = module.keypair.public-key-id
+  name         = "${local.name}-nexus"
 }
   

@@ -136,4 +136,5 @@ sudo hostnamectl set-hostname Sonarqube
 # Reboot the system
 sudo reboot
 EOF
+bb
 }

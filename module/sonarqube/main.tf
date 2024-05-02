@@ -18,9 +18,13 @@ resource "aws_instance" "sonarqube_server" {
 # aws dynamodb delete-table --table-name tspadp-backend --region eu-west-2
 
 #CLI command that would create s3 bucket and Dynamo db
+#!/bin/bash
 # aws s3api create-bucket --bucket tfstate-tspadp --region eu-west-2 --create-bucket-configuration LocationConstraint=your-region
-
+# echo "bucket created"
 # aws dynamodb create-table --table-name your table name --attribute-definitions AttributeName=LockID,AttributeType=S \
 #     --key-schema AttributeName=LockID,KeyType=HASH \
 #     --billing-mode PAY_PER_REQUEST \
 #     --region your region
+# echo "dynamo DB created"
+
+# create_bucket.sh

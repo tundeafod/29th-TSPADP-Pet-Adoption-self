@@ -45,8 +45,11 @@ module "nexus" {
   source       = "../module/nexus"
   ami          = "ami-053a617c6207ecc7b"
   subnet_id    = module.vpc.publicsub3
-  nexus-sg = module.securitygroup.nexus_sg
+  nexus-sg     = module.securitygroup.nexus_sg
   keyname      = module.keypair.public-key-id
   name         = "${local.name}-nexus"
+  nr-key       = ""
+  nr-acc-id    = ""
+  nr-region    = ""
 }
   

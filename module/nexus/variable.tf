@@ -1,4 +1,4 @@
-variable "ami" {}
+variable "ami_redhat" {}
 variable "subnet_id" {}
 variable "nexus-sg" {}
 variable "keyname" {}

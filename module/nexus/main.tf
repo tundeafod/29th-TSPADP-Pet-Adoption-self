@@ -1,5 +1,5 @@
 resource "aws_instance" "nexus_server" {
-  ami                         = var.ami
+  ami                         = var.ami_redhat
   instance_type               = "t2.xlarge"
   subnet_id                   = var.subnet_id
   key_name                    = var.keyname

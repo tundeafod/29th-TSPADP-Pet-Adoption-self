@@ -66,30 +66,30 @@ resource "aws_security_group" "sonarqube_sg" {
   }
 }
 
-# # Ansible SG
-# resource "aws_security_group" "ansible_sg" {
-#   name        = "ansible-sg"
-#   description = "ansible Security Group"
-#   vpc_id      = var.vpc_id
+# Ansible SG
+resource "aws_security_group" "ansible_sg" {
+  name        = "ansible-sg"
+  description = "ansible Security Group"
+  vpc_id      = var.vpc_id
 
-#   # Inbound Rules
-#   ingress {
-#     description = "ssh access"
-#     from_port   = 22
-#     to_port     = 22
-#     protocol    = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-#   egress {
-#     from_port   = 0
-#     to_port     = 0
-#     protocol    = "-1"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-#   tags = {
-#     Name = "ansible_sg"
-#   }
-# }
+  # Inbound Rules
+  ingress {
+    description = "ssh access"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "ansible_sg"
+  }
+}
 
 # Nexus SG
 resource "aws_security_group" "nexus_sg" {
@@ -187,6 +187,31 @@ resource "aws_security_group" "jenkins_sg" {
   }
   tags = {
     Name = "jenkins_sg"
+  }
+}
+
+# rds sg
+resource "aws_security_group" "rds-sg" {
+  name        = "rds-sg"
+  description = "rds Security Group"
+  vpc_id      = var.vpc-id
+
+  # Inbound Rules
+  ingress {
+    description     = "rds port"
+    from_port       = 3306
+    to_port         = 3306
+    protocol        = "tcp"
+    security_groups = [aws_security_group.bastion-sg.id, aws_security_group.asg-sg.id]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "rds-sg"
   }
 }
 

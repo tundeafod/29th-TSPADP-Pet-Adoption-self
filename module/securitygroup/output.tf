@@ -6,9 +6,9 @@ output "sonarqube_sg" {
   value = aws_security_group.sonarqube_sg.id
 }
 
-# output "ansible_sg" {
-#   value = aws_security_group.ansible_sg.id
-# }
+output "ansible_sg" {
+  value = aws_security_group.ansible_sg.id
+}
 
 output "nexus_sg" {
   value = aws_security_group.nexus_sg.id
@@ -16,6 +16,10 @@ output "nexus_sg" {
 
 output "jenkins_sg" {
   value = aws_security_group.jenkins_sg.id
+}
+
+output "rds-sg" {
+  value = aws_security_group.rds-sg.id
 }
 
 # output "asg_sg" {

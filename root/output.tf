@@ -8,9 +8,9 @@ output "bastion-ip" {
 output "nexus-ip" {
   value = module.nexus.nexus_ip
 }
-output "jenkins-ip" {
+output "jenkins_ip" {
   value = module.jenkins.jenkins_ip
 }
-output "ansible-ip" {
+output "ansible_ip" {
   value = module.ansible.ansible_ip
 }

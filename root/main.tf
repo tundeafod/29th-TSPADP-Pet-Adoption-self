@@ -3,10 +3,10 @@ locals {
 }
 
 # data "aws_secretsmanager_secret" "secretmanager" {
-#   name = "rds_admin"
-#   # depends_on = [
-#   #   aws_secretsmanager_secret.secretmanager
-#   # ]
+#   name = "admin"
+#   depends_on = [
+#     aws_secretsmanager_secret.secretmanager1
+#   ]
 # }
 
 # data "aws_secretsmanager_secret_version" "secret" {
@@ -51,7 +51,6 @@ module "bastion" {
   private_key = module.keypair.private-key-id
   name        = "${local.name}-bastion"
 }
-
 module "nexus" {
   source     = "../module/nexus"
   ami_redhat = "ami-035cecbff25e0d91e"
@@ -63,15 +62,39 @@ module "nexus" {
   nr-acc-id  = ""
   nr-region  = ""
 }
-
-module "nexus" {
+module "jenkins" {
   source     = "../module/jenkins"
   ami-redhat = "ami-035cecbff25e0d91e"
   subnet-id  = module.vpc.privatesub1
   jenkins-sg = module.securitygroup.jenkins_sg
   key-name   = module.keypair.public-key-id
-  name       = "${local.name}-nexus"
+  name       = "${local.name}-jenkins"
   nr-key     = ""
   nr-acc-id  = ""
   nr-region  = ""
+  nexus-ip   = ""
 }
+module "ansible" {
+  source      = "../module/ansible"
+  ami-redhat  = "ami-035cecbff25e0d91e"
+  subnet-id   = module.vpc.publicsub2
+  ansible-sg  = module.securitygroup.ansible_sg
+  key-name    = module.keypair.public-key-id
+  name        = "${local.name}-ansible"
+  nr-key      = ""
+  nr-acc-id   = ""
+  nr-region   = ""
+  nexus-ip    = ""
+  private_key = module.keypair.private-key-id
+}
+
+# module "database" {
+#   source                  = "../module/database"
+#   db_subnet_grp           = "db-subnetgroup"
+#   subnet                  = [module.vpc.privatesub1, module.vpc.privatesub2, module.vpc.privatesub3]
+#   security_group_mysql_sg = module.securitygroup.rds-sg
+#   db_name                 = "petclinic"
+#   db_username             = "admin"
+#   db_password             = data.aws_secretsmanager_secret_version.secret.secret_string
+#   name                    = "${local.name}-db-subnet"
+# }

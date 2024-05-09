@@ -1,11 +1,11 @@
 variable "ami-stage" {}
 variable "asg-sg" {}
 variable "keyname" {}
-variable "name" {}
-variable "nexus-ip-prd" {}
-variable "nr-acc-id-prd" {}
-variable "nr-region-prd" {}
-variable "nr-key-prd" {}
+variable "nexus-ip-stage" {}
+variable "nr-key-stage" {}
+variable "nr-acc-id-stage" {}
+variable "nr-region-stage" {}
 variable "vpc-zone-id-stage" {}
 variable "tg-arn" {}
 variable "asg-stage-name" {}
+variable "name" {}

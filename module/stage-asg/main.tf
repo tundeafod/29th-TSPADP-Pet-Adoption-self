@@ -5,10 +5,10 @@ resource "aws_launch_template" "lt-stage" {
   key_name               = var.keyname
   vpc_security_group_ids = [var.asg-sg]
   user_data = base64encode(templatefile("../module/stage-asg/docker-script.sh", {
-    nexus-ip             = var.nexus-ip-prd
-    newrelic-license-key = var.nr-key-prd
-    newrelic-account-id  = var.nr-acc-id-prd
-    newrelic-region      = var.nr-region-prd
+    nexus-ip             = var.nexus-ip-stage
+    newrelic-license-key = var.nr-key-stage
+    newrelic-account-id  = var.nr-acc-id-stage
+    newrelic-region      = var.nr-region-stage
   }))
   tags = {
     Name = "lt-stage"
@@ -31,7 +31,7 @@ resource "aws_autoscaling_group" "asg-stage" {
   }
   tag {
     key                 = "Name"
-    value               = var.asg-prd-name
+    value               = var.asg-stage-name
     propagate_at_launch = true
   }
 }

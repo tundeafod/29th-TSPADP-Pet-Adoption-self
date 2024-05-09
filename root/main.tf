@@ -115,4 +115,20 @@ module "prod-asg" {
   vpc-zone-id-prd = [module.vpc.privatesub1, module.vpc.privatesub2]
   name            = "${local.name}-prod-asg"
   tg-arn          = ""
+  asg-prod-name   = ""
+}
+
+module "stage-asg" {
+  source            = "../module/stage-asg"
+  ami-stage         = "ami-035cecbff25e0d91e"
+  asg-sg            = module.securitygroup.asg_sg
+  keyname           = module.keypair.public-key-id
+  nexus-ip-stage    = module.nexus.nexus_ip
+  nr-key-stage      = ""
+  nr-acc-id-stage   = ""
+  nr-region-stage   = ""
+  vpc-zone-id-stage = [module.vpc.privatesub1, module.vpc.privatesub2]
+  name              = "${local.name}-stage-asg"
+  tg-arn            = ""
+  asg-stage-name    = ""
 }

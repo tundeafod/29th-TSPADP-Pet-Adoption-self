@@ -6,6 +6,7 @@
 *.tfstate.*
 infra-key.pem
 vault-key.pem
+kms_key_id.txt
 
 # .tfstate files
 *.tfstate

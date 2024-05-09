@@ -102,3 +102,17 @@ module "database" {
   db_password             = data.aws_secretsmanager_secret_version.afodsecret.secret_string
   name                    = "${local.name}-db-subnet"
 }
+
+module "prod-asg" {
+  source          = "../module/prod-asg"
+  ami-prod        = "ami-035cecbff25e0d91e"
+  keyname         = module.keypair.public-key-id
+  asg-sg          = module.securitygroup.asg_sg
+  nexus-ip-prd    = module.nexus.nexus_ip
+  nr-key-prd      = ""
+  nr-acc-id-prd   = ""
+  nr-region-prd   = ""
+  vpc-zone-id-prd = [module.vpc.privatesub1, module.vpc.privatesub2]
+  name            = "${local.name}-prod-asg"
+  tg-arn          = ""
+}

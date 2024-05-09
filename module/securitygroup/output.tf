@@ -22,6 +22,6 @@ output "rds-sg" {
   value = aws_security_group.rds-sg.id
 }
 
-# output "asg_sg" {
-#   value = aws_security_group.asg_sg.id
-# }
+output "asg_sg" {
+  value = aws_security_group.asg_sg.id
+}

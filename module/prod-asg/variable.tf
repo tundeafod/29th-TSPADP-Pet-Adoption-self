@@ -7,3 +7,5 @@ variable "nexus-ip-prd" {}
 variable "nr-acc-id-prd" {}
 variable "nr-region-prd" {}
 variable "nr-key-prd" {}
+variable "vpc-zone-id-prd" {}
+variable "tg-arn" {}

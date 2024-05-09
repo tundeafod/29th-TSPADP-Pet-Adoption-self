@@ -1,5 +1,5 @@
 # Database Subnet Group
-resource "aws_db_subnet_group" "db-Subnet-group" {
+resource "aws_db_subnet_group" "db-subnet-group" {
   name       = var.db_subnet_grp
   subnet_ids = var.subnet
   tags = {
@@ -10,7 +10,7 @@ resource "aws_db_subnet_group" "db-Subnet-group" {
 # MySQL RDS database
 resource "aws_db_instance" "rds-database" {
   identifier             = "petclinic"
-  db_subnet_group_name   = aws_db_subnet_group.db-Subnet-group.name #adjust reference
+  db_subnet_group_name   = aws_db_subnet_group.db-subnet-group.name #adjust reference
   vpc_security_group_ids = [var.security_group_mysql_sg]
   publicly_accessible    = true
   skip_final_snapshot    = true

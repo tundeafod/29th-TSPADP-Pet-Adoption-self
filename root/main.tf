@@ -1,16 +1,20 @@
 locals {
-  name = "Jenkins-Ansible-Auto-discovery"
+  name = "Jenkins-Ansible-Auto-discovery1"
 }
 
-# data "aws_secretsmanager_secret" "secretmanager" {
+data "aws_secretsmanager_secret_version" "afodsecret" {
+  secret_id = "afodsecret"
+}
+
+# data "aws_secretsmanager_secret" "autodiscovery" {
 #   name = "admin"
 #   depends_on = [
-#     aws_secretsmanager_secret.secretmanager1
+#     aws_secretsmanager_secret.autodiscovery
 #   ]
 # }
 
-# data "aws_secretsmanager_secret_version" "secret" {
-#   secret_id = data.aws_secretsmanager_secret.secretmanager.id
+# data "aws_secretsmanager_secret_version" "version_secret" {
+#   secret_id = data.aws_secretsmanager_secret.autodiscovery.id
 # }
 
 # Include the keypair module for generating and managing SSH keys.
@@ -88,13 +92,13 @@ module "ansible" {
   private_key = module.keypair.private-key-id
 }
 
-# module "database" {
-#   source                  = "../module/database"
-#   db_subnet_grp           = "db-subnetgroup"
-#   subnet                  = [module.vpc.privatesub1, module.vpc.privatesub2, module.vpc.privatesub3]
-#   security_group_mysql_sg = module.securitygroup.rds-sg
-#   db_name                 = "petclinic"
-#   db_username             = "admin"
-#   db_password             = data.aws_secretsmanager_secret_version.secret.secret_string
-#   name                    = "${local.name}-db-subnet"
-# }
+module "database" {
+  source                  = "../module/database"
+  db_subnet_grp           = "db-subnetgroup"
+  subnet                  = [module.vpc.privatesub1, module.vpc.privatesub2, module.vpc.privatesub3]
+  security_group_mysql_sg = module.securitygroup.rds-sg
+  db_name                 = "petclinic"
+  db_username             = "admin"
+  db_password             = data.aws_secretsmanager_secret_version.afodsecret.secret_string
+  name                    = "${local.name}-db-subnet"
+}

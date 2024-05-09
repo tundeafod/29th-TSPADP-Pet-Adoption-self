@@ -1,6 +1,6 @@
 locals {
   jenkins_user_data = <<-EOF
-  #!/bin/bash
+#!/bin/bash
 sudo yum update -y
 sudo yum install git -y
 sudo yum install maven -y
@@ -16,6 +16,7 @@ sudo systemctl start jenkins
 sudo yum install -y yum-utils
 sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 sudo yum install docker-ce -y
+sudo service docker start
 sudo systemctl start docker
 sudo systemctl enable docker
 sudo usermod -aG docker ec2-user
@@ -40,9 +41,8 @@ sudo systemctl restart docker
 # sudo yum -y update
 # sudo yum -y install trivy
 
-curl -Ls https://download.newrelic.com/install/newrelic-cli/scripts/install.sh | bash && sudo NEW_RELIC_API_KEY="${var.nr-key}" NEW_RELIC_ACCOUNT_ID="${var.nr-acc-id}" NEW_RELIC_REGION="${var.nr-region}" /usr/local/bin/newrelic install -y
+# curl -Ls https://download.newrelic.com/install/newrelic-cli/scripts/install.sh | bash && sudo NEW_RELIC_API_KEY="${var.nr-key}" NEW_RELIC_ACCOUNT_ID="${var.nr-acc-id}" NEW_RELIC_REGION="${var.nr-region}" /usr/local/bin/newrelic install -y
 
 sudo hostnamectl set-hostname jenkins
-
 EOF
 }

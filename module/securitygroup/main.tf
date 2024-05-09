@@ -190,30 +190,31 @@ resource "aws_security_group" "jenkins_sg" {
   }
 }
 
-# # rds sg
-# resource "aws_security_group" "rds-sg" {
-#   name        = "rds-sg"
-#   description = "rds Security Group"
-#   vpc_id      = var.vpc-id
+# rds sg
+resource "aws_security_group" "rds-sg" {
+  name        = "rds-sg"
+  description = "rds Security Group"
+  vpc_id      = var.vpc_id
 
-#   # Inbound Rules
-#   ingress {
-#     description     = "rds port"
-#     from_port       = 3306
-#     to_port         = 3306
-#     protocol        = "tcp"
-#     security_groups = [aws_security_group.bastion-sg.id, aws_security_group.asg-sg.id]
-#   }
-#   egress {
-#     from_port   = 0
-#     to_port     = 0
-#     protocol    = "-1"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-#   tags = {
-#     Name = "rds-sg"
-#   }
-# }
+  # Inbound Rules
+  ingress {
+    description     = "rds port"
+    from_port       = 3306
+    to_port         = 3306
+    protocol        = "tcp"
+    security_groups = [aws_security_group.bastion_sg.id]
+    #aws_security_group.asg-sg.id
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "rds-sg"
+  }
+}
 
 # # asg SG
 # resource "aws_security_group" "asg_sg" {

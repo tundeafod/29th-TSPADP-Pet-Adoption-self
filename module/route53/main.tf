@@ -1,18 +1,10 @@
-# Create A Route 53 record ET1PACUJP1
-resource "aws_route53_record" "record" {
-  zone_id = data.aws_route53_zone.route53_zone.zone_id
-  name    = "tundeafod.click"
-  type    = "A"
-
-  alias {
-    name                   = aws_lb.lb.dns_name
-    zone_id                = aws_lb.lb.zone_id
-    evaluate_target_health = true
-  }
+# Route 53 hosted zone
+data "aws_route53_zone" "route53_zone" {
+  name         = var.domain-name
+  private_zone = false
 }
 
-
-
+# Create A Route 53 record
 resource "aws_route53_record" "jenkins_record" {
   zone_id = data.aws_route53_zone.route53_zone.zone_id
   name    = var.jenkins_domain_name

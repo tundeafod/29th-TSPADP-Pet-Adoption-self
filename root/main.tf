@@ -44,6 +44,8 @@ module "sonarqube" {
   nr-key       = ""
   nr-acc-id    = ""
   nr-region    = ""
+  elb-subnets  = [module.vpc.publicsub1, module.vpc.publicsub2]
+  cert-arn     = module.acm.acm_certificate
 }
 
 module "bastion" {
@@ -65,6 +67,8 @@ module "nexus" {
   nr-key     = ""
   nr-acc-id  = ""
   nr-region  = ""
+  elb-subnets = [module.vpc.publicsub1, module.vpc.publicsub2]
+  cert-arn   = module.acm.acm_certificate
 }
 module "jenkins" {
   source     = "../module/jenkins"
@@ -77,6 +81,8 @@ module "jenkins" {
   nr-acc-id  = ""
   nr-region  = ""
   nexus-ip   = ""
+  subnet-elb = [module.vpc.publicsub1, module.vpc.publicsub2]
+  cert-arn   = module.acm.acm_certificate
 }
 module "ansible" {
   source      = "../module/ansible"
@@ -149,9 +155,15 @@ module "stage-lb" {
   stage-alb-name  = "${local.name}-stage-alb"
 }
 
+module "acm" {
+  source       = "../module/acm"
+  domain_name  = "tundeafod.click"
+  domain_name2 = "*.tundeafod.click"
+}
+
 module "route53" {
   source                = "../module/route53"
-  domain_name           = "tundeafod.click"
+  domain-name           = "tundeafod.click"
   jenkins_domain_name   = "jenkins.tundeafod.click"
   jenkins_lb_dns_name   = module.jenkins.jenkins_dns_name
   jenkins_lb_zone_id    = module.jenkins.jenkins_zone_id

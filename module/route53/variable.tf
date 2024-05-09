@@ -1,4 +1,4 @@
-variable "domain_name" {}
+variable "domain-name" {}
 variable "jenkins_domain_name" {}
 variable "jenkins_lb_dns_name" {}
 variable "jenkins_lb_zone_id" {}

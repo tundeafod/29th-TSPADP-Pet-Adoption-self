@@ -6,6 +6,5 @@ variable "nr-key-prd" {}
 variable "nr-acc-id-prd" {}
 variable "nr-region-prd" {}
 variable "vpc-zone-id-prd" {}
-variable "name" {}
 variable "tg-arn" {}
-variable "asg-prd-name" {}
+variable "asg-prod-name" {}

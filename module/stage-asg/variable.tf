@@ -8,4 +8,3 @@ variable "nr-region-stage" {}
 variable "vpc-zone-id-stage" {}
 variable "tg-arn" {}
 variable "asg-stage-name" {}
-variable "name" {}

@@ -113,9 +113,8 @@ module "prod-asg" {
   nr-acc-id-prd   = ""
   nr-region-prd   = ""
   vpc-zone-id-prd = [module.vpc.privatesub1, module.vpc.privatesub2]
-  name            = "${local.name}-prod-asg"
   tg-arn          = ""
-  asg-prod-name   = ""
+  asg-prod-name   = "${local.name}-prod-asg"
 }
 
 module "stage-asg" {
@@ -128,7 +127,6 @@ module "stage-asg" {
   nr-acc-id-stage   = ""
   nr-region-stage   = ""
   vpc-zone-id-stage = [module.vpc.privatesub1, module.vpc.privatesub2]
-  name              = "${local.name}-stage-asg"
   tg-arn            = ""
-  asg-stage-name    = ""
+  asg-stage-name    = "${local.name}-stage-asg"
 }

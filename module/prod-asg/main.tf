@@ -17,7 +17,7 @@ resource "aws_launch_template" "lt-prod" {
 
 # Create an Auto Scaling Group (ASG) for the production environment
 resource "aws_autoscaling_group" "asg-prd" {
-  name                      = var.asg-prd-name
+  name                      = var.asg-prod-name
   max_size                  = 5
   min_size                  = 1
   health_check_grace_period = 300
@@ -27,11 +27,11 @@ resource "aws_autoscaling_group" "asg-prd" {
   vpc_zone_identifier       = var.vpc-zone-id-prd
   target_group_arns         = [var.tg-arn]
   launch_template {
-    id = aws_launch_template.lt-prd.id
+    id = aws_launch_template.lt-prod.id
   }
   tag {
     key                 = "Name"
-    value               = var.asg-prd-name
+    value               = var.asg-prod-name
     propagate_at_launch = true
   }
 }

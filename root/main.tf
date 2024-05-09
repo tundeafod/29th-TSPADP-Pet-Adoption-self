@@ -130,3 +130,41 @@ module "stage-asg" {
   tg-arn            = ""
   asg-stage-name    = "${local.name}-stage-asg"
 }
+
+module "prod-lb" {
+  source          = "../module/prod-lb"
+  vpc_id          = module.vpc.vpc_id
+  prod-sg         = [module.securitygroup.asg-sg]
+  prod-subnet     = [module.vpc.publicsub1, module.vpc.publicsub2, module.vpc.publicsub3]
+  certificate_arn = ""
+  prod-alb-name   = "${local.name}-prod-alb"
+}
+
+module "stage-lb" {
+  source          = "../module/stage-lb"
+  vpc_id          = module.vpc.vpc_id
+  stage-sg        = [module.securitygroup.asg-sg]
+  stage-subnet    = [module.vpc.publicsub1, module.vpc.publicsub2, module.vpc.publicsub3]
+  certificate_arn = ""
+  stage-alb-name  = "${local.name}-stage-alb"
+}
+
+module "route53" {
+  source                = "../module/route53"
+  domain_name           = "tundeafod.click"
+  jenkins_domain_name   = "jenkins.tundeafod.click"
+  jenkins_lb_dns_name   = module.jenkins.jenkins_dns_name
+  jenkins_lb_zone_id    = module.jenkins.jenkins_zone_id
+  nexus_domain_name     = "nexus.tundeafod.click"
+  nexus_lb_dns_name     = module.nexus.nexus_dns_name
+  nexus_lb_zone_id      = module.nexus.nexus_zone_id
+  sonarqube_domain_name = "sonarqube.tundeafod.click"
+  sonarqube_lb_dns_name = module.sonarqube.sonarqube_dns_name
+  sonarqube_lb_zone_id  = module.sonarqube.sonarqube_zone_id
+  prod_domain_name      = "prod.tundeafod.click"
+  prod_lb_dns_name      = module.prod-lb.prod-lb-dns
+  prod_lb_zone_id       = module.prod-lb.prod-lb-zoneid
+  stage_domain_name     = "stage.tundeafod.click"
+  stage_lb_dns_name     = module.stage-lb.stage-lb-dns
+  stage_lb_zone_id      = module.stage-lb.stage-lb-zoneid
+}

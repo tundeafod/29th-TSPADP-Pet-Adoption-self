@@ -117,5 +117,7 @@ sudo add-apt-repository "deb https://packages.grafana.com/oss/deb stable main"
 sudo apt update
 sudo apt -y install grafana
 sudo systemctl enable --now grafana-server
+
+sudo hostnamectl set-hostname monitoring
 EOF
 }

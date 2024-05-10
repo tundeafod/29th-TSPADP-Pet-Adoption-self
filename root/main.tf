@@ -41,9 +41,6 @@ module "sonarqube" {
   subnet_id    = module.vpc.publicsub1
   keypair      = module.keypair.public-key-id
   name         = "${local.name}-sonarqube"
-  nr-key       = ""
-  nr-acc-id    = ""
-  nr-region    = ""
   elb-subnets  = [module.vpc.publicsub1, module.vpc.publicsub2]
   cert-arn     = module.acm.acm_certificate
 }
@@ -64,9 +61,6 @@ module "nexus" {
   nexus-sg    = module.securitygroup.nexus_sg
   keyname     = module.keypair.public-key-id
   name        = "${local.name}-nexus"
-  nr-key      = ""
-  nr-acc-id   = ""
-  nr-region   = ""
   elb-subnets = [module.vpc.publicsub1, module.vpc.publicsub2]
   cert-arn    = module.acm.acm_certificate
 }
@@ -77,10 +71,7 @@ module "jenkins" {
   jenkins-sg = module.securitygroup.jenkins_sg
   key-name   = module.keypair.public-key-id
   name       = "${local.name}-jenkins"
-  nr-key     = ""
-  nr-acc-id  = ""
-  nr-region  = ""
-  nexus-ip   = ""
+  nexus-ip   = module.nexus.nexus_ip
   subnet-elb = [module.vpc.publicsub1, module.vpc.publicsub2]
   cert-arn   = module.acm.acm_certificate
 }
@@ -91,10 +82,7 @@ module "ansible" {
   ansible-sg  = module.securitygroup.ansible_sg
   key-name    = module.keypair.public-key-id
   name        = "${local.name}-ansible"
-  nr-key      = ""
-  nr-acc-id   = ""
-  nr-region   = ""
-  nexus-ip    = ""
+  nexus-ip    = module.nexus.nexus_ip
   private_key = module.keypair.private-key-id
 }
 
@@ -116,7 +104,6 @@ module "monitoring" {
   subnet_id   = module.vpc.publicsub1
   keypair     = module.keypair.public-key-id
   name        = "${local.name}-promgraf"
-
   elb-subnets = [module.vpc.publicsub1, module.vpc.publicsub2]
   cert-arn    = module.acm.acm_certificate
 }
@@ -127,11 +114,8 @@ module "prod-asg" {
   keyname         = module.keypair.public-key-id
   asg-sg          = module.securitygroup.asg_sg
   nexus-ip-prd    = module.nexus.nexus_ip
-  nr-key-prd      = ""
-  nr-acc-id-prd   = ""
-  nr-region-prd   = ""
   vpc-zone-id-prd = [module.vpc.privatesub1, module.vpc.privatesub2]
-  tg-arn          = ""
+  tg-arn          = module.prod-lb.prod-tg-arn
   asg-prod-name   = "${local.name}-prod-asg"
 }
 
@@ -141,11 +125,8 @@ module "stage-asg" {
   asg-sg            = module.securitygroup.asg_sg
   keyname           = module.keypair.public-key-id
   nexus-ip-stage    = module.nexus.nexus_ip
-  nr-key-stage      = ""
-  nr-acc-id-stage   = ""
-  nr-region-stage   = ""
   vpc-zone-id-stage = [module.vpc.privatesub1, module.vpc.privatesub2]
-  tg-arn            = ""
+  tg-arn            = module.stage-lb.stage-tg-arn
   asg-stage-name    = "${local.name}-stage-asg"
 }
 
@@ -191,4 +172,10 @@ module "route53" {
   stage_domain_name     = "stage.tundeafod.click"
   stage_lb_dns_name     = module.stage-lb.stage-lb-dns
   stage_lb_zone_id      = module.stage-lb.stage-lb-zoneid
+  prom_domain_name      = "prom.tundeafod.click"
+  prom_lb_dns_name      = module.monitoring.prom_dns_name
+  prom_lb_zone_id       = module.monitoring.prom_zone_id
+  graf_domain_name      = "graf.tundeafod.click"
+  graf_lb_dns_name      = module.monitoring.graf_dns_name
+  graf_lb_zone_id       = module.monitoring.graf_zone_id
 }

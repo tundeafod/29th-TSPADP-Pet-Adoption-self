@@ -277,6 +277,14 @@ resource "aws_security_group" "promgraf_sg" {
   }
 
   ingress {
+    description = "https port"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
     description = "prometheus access"
     from_port   = 9090
     to_port     = 9090

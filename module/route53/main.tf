@@ -16,6 +16,28 @@ resource "aws_route53_record" "jenkins_record" {
   }
 }
 
+resource "aws_route53_record" "prom_record" {
+  zone_id = data.aws_route53_zone.route53_zone.zone_id
+  name    = var.prom_domain_name
+  type    = "A"
+  alias {
+    name                   = var.prom_lb_dns_name
+    zone_id                = var.prom_lb_zone_id
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_route53_record" "graf_record" {
+  zone_id = data.aws_route53_zone.route53_zone.zone_id
+  name    = var.graf_domain_name
+  type    = "A"
+  alias {
+    name                   = var.graf_lb_dns_name
+    zone_id                = var.graf_lb_zone_id
+    evaluate_target_health = true
+  }
+}
+
 resource "aws_route53_record" "nexus_record" {
   zone_id = data.aws_route53_zone.route53_zone.zone_id
   name    = var.nexus_domain_name

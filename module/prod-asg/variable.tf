@@ -2,9 +2,6 @@ variable "ami-prod" {}
 variable "keyname" {}
 variable "asg-sg" {}
 variable "nexus-ip-prd" {}
-variable "nr-key-prd" {}
-variable "nr-acc-id-prd" {}
-variable "nr-region-prd" {}
 variable "vpc-zone-id-prd" {}
 variable "tg-arn" {}
 variable "asg-prod-name" {}

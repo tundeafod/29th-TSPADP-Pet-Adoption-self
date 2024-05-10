@@ -14,3 +14,7 @@ output "jenkins_ip" {
 output "ansible_ip" {
   value = module.ansible.ansible_ip
 }
+
+output "promgraf_ip" {
+  value = module.monitoring.promgraf_ip
+}

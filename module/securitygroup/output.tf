@@ -25,3 +25,7 @@ output "rds-sg" {
 output "asg_sg" {
   value = aws_security_group.asg_sg.id
 }
+
+output "promgraf_sg" {
+  value = aws_security_group.promgraf_sg.id
+}

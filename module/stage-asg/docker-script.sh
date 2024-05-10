@@ -64,6 +64,4 @@ sudo chown ec2-user:ec2-user /home/ec2-user/scripts/script.sh
 
 # Restart Docker, Install New Relic CLI, Set hostname for the instance
 sudo systemctl restart docker
-curl -Ls https://download.newrelic.com/install/newrelic-cli/scripts/install.sh | bash
-sudo NEW_RELIC_API_KEY="${newrelic-license-key}" NEW_RELIC_ACCOUNT_ID="${newrelic-account-id}" NEW_RELIC_REGION="${newrelic-region}" /usr/local/bin/newrelic install -y
 sudo hostnamectl set-hostname stage-instance

@@ -58,17 +58,17 @@ module "bastion" {
   name        = "${local.name}-bastion"
 }
 module "nexus" {
-  source     = "../module/nexus"
-  ami_redhat = "ami-035cecbff25e0d91e"
-  subnet_id  = module.vpc.publicsub3
-  nexus-sg   = module.securitygroup.nexus_sg
-  keyname    = module.keypair.public-key-id
-  name       = "${local.name}-nexus"
-  nr-key     = ""
-  nr-acc-id  = ""
-  nr-region  = ""
+  source      = "../module/nexus"
+  ami_redhat  = "ami-035cecbff25e0d91e"
+  subnet_id   = module.vpc.publicsub3
+  nexus-sg    = module.securitygroup.nexus_sg
+  keyname     = module.keypair.public-key-id
+  name        = "${local.name}-nexus"
+  nr-key      = ""
+  nr-acc-id   = ""
+  nr-region   = ""
   elb-subnets = [module.vpc.publicsub1, module.vpc.publicsub2]
-  cert-arn   = module.acm.acm_certificate
+  cert-arn    = module.acm.acm_certificate
 }
 module "jenkins" {
   source     = "../module/jenkins"
@@ -109,6 +109,18 @@ module "database" {
   name                    = "${local.name}-db-subnet"
 }
 
+module "monitoring" {
+  source      = "../module/monitoring"
+  ami         = "ami-053a617c6207ecc7b"
+  promgraf-sg = module.securitygroup.promgraf_sg
+  subnet_id   = module.vpc.publicsub1
+  keypair     = module.keypair.public-key-id
+  name        = "${local.name}-promgraf"
+
+  elb-subnets = [module.vpc.publicsub1, module.vpc.publicsub2]
+  cert-arn    = module.acm.acm_certificate
+}
+
 module "prod-asg" {
   source          = "../module/prod-asg"
   ami-prod        = "ami-035cecbff25e0d91e"
@@ -140,18 +152,18 @@ module "stage-asg" {
 module "prod-lb" {
   source          = "../module/prod-lb"
   vpc_id          = module.vpc.vpc_id
-  prod-sg         = [module.securitygroup.asg-sg]
+  prod-sg         = [module.securitygroup.asg_sg]
   prod-subnet     = [module.vpc.publicsub1, module.vpc.publicsub2, module.vpc.publicsub3]
-  certificate_arn = ""
+  certificate_arn = module.acm.acm_certificate
   prod-alb-name   = "${local.name}-prod-alb"
 }
 
 module "stage-lb" {
   source          = "../module/stage-lb"
   vpc_id          = module.vpc.vpc_id
-  stage-sg        = [module.securitygroup.asg-sg]
+  stage-sg        = [module.securitygroup.asg_sg]
   stage-subnet    = [module.vpc.publicsub1, module.vpc.publicsub2, module.vpc.publicsub3]
-  certificate_arn = ""
+  certificate_arn = module.acm.acm_certificate
   stage-alb-name  = "${local.name}-stage-alb"
 }
 

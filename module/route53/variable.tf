@@ -14,3 +14,9 @@ variable "prod_lb_zone_id" {}
 variable "stage_domain_name" {}
 variable "stage_lb_dns_name" {}
 variable "stage_lb_zone_id" {}
+variable "prom_domain_name" {}
+variable "prom_lb_dns_name" {}
+variable "prom_lb_zone_id" {}
+variable "graf_domain_name" {}
+variable "graf_lb_dns_name" {}
+variable "graf_lb_zone_id" {}

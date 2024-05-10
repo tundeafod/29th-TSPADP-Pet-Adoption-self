@@ -1,7 +1,7 @@
 variable "ami" {}
-variable "sonarqube-sg" {}
-variable "subnet_id" {}
 variable "keypair" {}
+variable "promgraf-sg" {}
+variable "subnet_id" {}
 variable "name" {}
 variable "elb-subnets" {}
 variable "cert-arn" {}
